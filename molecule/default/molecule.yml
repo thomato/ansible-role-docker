@@ -1,13 +1,43 @@
 ---
 dependency:
   name: galaxy
+  options:
+    role-file: requirements.yml
 driver:
   name: podman
 platforms:
-  - name: instance
-    image: quay.io/centos/centos:stream8
+  - name: ubuntu2004
+    image: geerlingguy/docker-ubuntu2004-ansible
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+    pre_build_image: true
+  - name: ubuntu2204
+    image: geerlingguy/docker-ubuntu2204-ansible
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
     pre_build_image: true
 provisioner:
-  name: ansible
+    name: ansible
+    config_options:
+      defaults:
+        interpreter_python: auto_silent
+        callback_whitelist: profile_tasks, timer, yaml
 verifier:
   name: ansible
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
+  
