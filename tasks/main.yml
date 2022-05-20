@@ -6,6 +6,9 @@
   ansible.builtin.apt: name={{ item }} state=latest update_cache=yes
   loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
 
+- name: "Install GPG Agent"
+  ansible.builtin.apt: name=gpg-agent state=latest update_cache=yes
+
 - name: "Add Docker GPG apt Key"
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg

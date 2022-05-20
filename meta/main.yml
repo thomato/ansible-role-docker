@@ -1,7 +1,7 @@
 galaxy_info:
   author: Nando Thomassen
   description: Docker for Ubuntu
-  role_name: traefik
+  role_name: ansible_role_docker
   namespace: thomato
 
   # If the issue tracker for your role is not on github, uncomment the

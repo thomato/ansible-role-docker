@@ -1,12 +1,26 @@
 ---
 - name: Converge
   hosts: all
+
+  pre_tasks:
+    - name: Wait for systemd to complete initialization.  # noqa 303
+      command: systemctl is-system-running
+      register: systemctl_status
+      until: >
+        'running' in systemctl_status.stdout or
+        'degraded' in systemctl_status.stdout
+      retries: 30
+      delay: 5
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+      failed_when: systemctl_status.rc > 1
+
   tasks:
     # replace these tasks with whatever you find suitable to test
     - name: Copy something to test use of synchronize module
       ansible.builtin.copy:
         src: /etc/hosts
         dest: /tmp/hosts-from-controller
-    - name: "Include thomato.role_docker"
+    - name: "Include thomato.ansible_role_docker"
       ansible.builtin.include_role:
-        name: "thomato.role_docker"
+        name: "thomato.ansible_role_docker"
